@@ -216,3 +216,15 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Other
+.quarto/
+_freeze/
+_cache/
+_site/
+__pycache__/
+*.pyc
+*.joblib
+data/raw_*.csv
+.DS_Store
+.ipynb_checkpoints/
