@@ -27,6 +27,7 @@ format:
     toc: true
     toc-depth: 3
     code-fold: true
+    css: styles.css
     embed-resources: false
 
 execute:
