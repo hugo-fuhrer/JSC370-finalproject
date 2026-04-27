@@ -1,0 +1,59 @@
+---
+title: "Extreme Weather and Next-Day TSX Returns"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    fig-cap-location: bottom
+    tbl-cap-location: top
+---
+
+## Introduction
+
+Motivation etc...
+
+We focus on 15 TSX-listed companies with material Ontario exposure, spanning seven sectors: banks (TD, RY, CM, BNS, BMO), insurance (IFC, MFC, POW), utilities (FTS, EMA), energy (ENB, SU), telecom (BCE), real estate (REI-UN), and retail (L), benchmarked against XIU.TO (the iShares S&P/TSX 60 ETF). We pair these with climate observations from 2008 to 2024 from n weather stations across southern Ontario. The questions we test are:
+
+1. **Regression.** Does an extreme-weather day move tomorrow's log return for these tickers?
+2. **Classification.** Does extreme weather shift the probability that the next day's return is positive?
+
+## Methods
+
+### Data acquisition
+
+Weather data comes from the Meteorological Service of Canada GeoMet OGC API (`api.weather.gc.ca`). For each of the n active stations in the 2008–2024 range within our southern Ontario bounding box (lon $\in [-83,-74.5]$, lat $\in [41.5, 46.5]$), we paginate through the
+`/collections/climate-daily/items` endpoint and collect six daily variables: mean, max, and min temperature (C), total precipitation (mm), total snowfall (cm), and the maximum wind gust (km/h).
+
+Stock prices are pulled with the `yfinance` package, which uses Yahoo Finance's public endpoints. We download adjusted closing prices for the 15 tickers plus XIU.TO and convert to daily log returns $r_t = \ln(P_t / P_{t-1})$.
+
+### Data missingness
+
+polished table here when done
+
+### Feature engineering
+
+Extreme-weather flags are based on whole-period percentile thresholds: `extreme_cold` = mean temperature in the bottom 5%, `extreme_heat` = top 5%, `extreme_precip` = top 5% of total precipitation, `extreme_wind` = top 5% of maximum gust. `extreme_any` is set to 1 if any individual flag is up for that day.
+
+We add continuous features in an attempt to capture more detail than the binary flags. Standardised mean temperature (`temp_z`), a 5-day temperature anomaly (`temp_5d_anom`, the deviation of today's mean from the trailing 5-day mean), standardised precipitation, and standardised wind. For the financial side of things, we include lagged returns ($r_{t-1}$, $r_{t-2}$), a 5-day rolling mean and 5-day rolling volatility, and the contemporaneous market return (XIU.TO log return on day $t$, controlling for the broad market factor). Calendar features (`month`, `dow`) for seasonality/weekday effects, and one-hot sector dummies allow the models to capture differences across sectors. The final feature set has 25 predictors; the outcome is either the next-day log return for regression or its sign for classification.
+
+### Train/test split and model selection
+
+To respect the time-series structure we use a chronological split: training data is everything before 2022-01-01, and the test set is 2022-01-01 onwards.
+
+The four models are:
+
+- **Naive baseline** — predict the training-period mean for every test observation.
+- **Random Forest**: 200 trees, `max_features = sqrt(p)`, `min_samples_leaf = 10`, OOB scoring on. The classifier uses identical hyperparameters.
+- **XGBoost**: a 5-iteration randomized search over `max_depth: {3,4,5,6}`, `learning_rate: {0.03, 0.05, 0.1}`, `reg_lambda ∈ {1, 10}`, `subsample ∈ {0.85, 1.0}`. CV uses 3 chronological folds with negative-RMSE scoring. The selected configuration is:... . Final model fit with n boosting rounds.
+- **GAM**: smooth splines on the 7 continuous features (mean temp, total precip, max gust, 5-day temp anomaly, lagged return, 5-day vol, market return) plus a factor term for `extreme_any`.
+
+Reported test statistics are: RMSE, MAE, and $R^2$ for regression; accuracy and ROC-AUC for classification. Additionally, we show variable importance, partial dependence (XGBoost) and partial-effect curves (GAM), and a bias-variance curve.
+
+## Results
+
+## Models 
+
+## Conclusions and Summary
+
+---
