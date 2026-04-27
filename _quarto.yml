@@ -1,0 +1,36 @@
+project:
+  type: website
+  output-dir: _site
+
+website:
+  title: "Extreme Weather and TSX Returns"
+  description: "JSC370 Final Project — Do extreme weather days in Ontario move next-day stock returns for TSX-listed Ontario companies?"
+  navbar:
+    background: light
+    left:
+      - href: index.qmd
+        text: Home
+      - href: report.qmd
+        text: Report
+      - href: viz.qmd
+        text: Interactive Visualizations
+    right:
+      - icon: github
+        href: https://github.com/hugo-fuhrer/JSC370-finalproject
+        text: GitHub
+  page-footer:
+    center: "JSC370 Final Project"
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-depth: 3
+    code-fold: true
+    embed-resources: false
+
+execute:
+  echo: false
+  warning: false
+  message: false
+  freeze: auto
