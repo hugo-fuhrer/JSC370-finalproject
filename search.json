@@ -1,0 +1,100 @@
+[
+  {
+    "objectID": "report.html",
+    "href": "report.html",
+    "title": "Extreme Weather and Next-Day TSX Returns",
+    "section": "",
+    "text": "Motivation etc…\nWe focus on 15 TSX-listed companies with material Ontario exposure, spanning seven sectors: banks (TD, RY, CM, BNS, BMO), insurance (IFC, MFC, POW), utilities (FTS, EMA), energy (ENB, SU), telecom (BCE), real estate (REI-UN), and retail (L), benchmarked against XIU.TO (the iShares S&P/TSX 60 ETF). We pair these with climate observations from 2008 to 2024 from n weather stations across southern Ontario. The questions we test are:\n\nRegression. Does an extreme-weather day move tomorrow’s log return for these tickers?\nClassification. Does extreme weather shift the probability that the next day’s return is positive?"
+  },
+  {
+    "objectID": "report.html#introduction",
+    "href": "report.html#introduction",
+    "title": "Extreme Weather and Next-Day TSX Returns",
+    "section": "",
+    "text": "Motivation etc…\nWe focus on 15 TSX-listed companies with material Ontario exposure, spanning seven sectors: banks (TD, RY, CM, BNS, BMO), insurance (IFC, MFC, POW), utilities (FTS, EMA), energy (ENB, SU), telecom (BCE), real estate (REI-UN), and retail (L), benchmarked against XIU.TO (the iShares S&P/TSX 60 ETF). We pair these with climate observations from 2008 to 2024 from n weather stations across southern Ontario. The questions we test are:\n\nRegression. Does an extreme-weather day move tomorrow’s log return for these tickers?\nClassification. Does extreme weather shift the probability that the next day’s return is positive?"
+  },
+  {
+    "objectID": "report.html#methods",
+    "href": "report.html#methods",
+    "title": "Extreme Weather and Next-Day TSX Returns",
+    "section": "2 Methods",
+    "text": "2 Methods\n\n2.1 Data acquisition\nWeather data comes from the Meteorological Service of Canada GeoMet OGC API (api.weather.gc.ca). For each of the n active stations in the 2008–2024 range within our southern Ontario bounding box (lon \\(\\in [-83,-74.5]\\), lat \\(\\in [41.5, 46.5]\\)), we paginate through the /collections/climate-daily/items endpoint and collect six daily variables: mean, max, and min temperature (C), total precipitation (mm), total snowfall (cm), and the maximum wind gust (km/h).\nStock prices are pulled with the yfinance package, which uses Yahoo Finance’s public endpoints. We download adjusted closing prices for the 15 tickers plus XIU.TO and convert to daily log returns \\(r_t = \\ln(P_t / P_{t-1})\\).\n\n\n2.2 Data missingness\npolished table here when done\n\n\n2.3 Feature engineering\nExtreme-weather flags are based on whole-period percentile thresholds: extreme_cold = mean temperature in the bottom 5%, extreme_heat = top 5%, extreme_precip = top 5% of total precipitation, extreme_wind = top 5% of maximum gust. extreme_any is set to 1 if any individual flag is up for that day.\nWe add continuous features in an attempt to capture more detail than the binary flags. Standardised mean temperature (temp_z), a 5-day temperature anomaly (temp_5d_anom, the deviation of today’s mean from the trailing 5-day mean), standardised precipitation, and standardised wind. For the financial side of things, we include lagged returns (\\(r_{t-1}\\), \\(r_{t-2}\\)), a 5-day rolling mean and 5-day rolling volatility, and the contemporaneous market return (XIU.TO log return on day \\(t\\), controlling for the broad market factor). Calendar features (month, dow) for seasonality/weekday effects, and one-hot sector dummies allow the models to capture differences across sectors. The final feature set has 25 predictors; the outcome is either the next-day log return for regression or its sign for classification.\n\n\n2.4 Train/test split and model selection\nTo respect the time-series structure we use a chronological split: training data is everything before 2022-01-01, and the test set is 2022-01-01 onwards.\nThe four models are:\n\nNaive baseline — predict the training-period mean for every test observation.\nRandom Forest: 200 trees, max_features = sqrt(p), min_samples_leaf = 10, OOB scoring on. The classifier uses identical hyperparameters.\nXGBoost: a 5-iteration randomized search over max_depth: {3,4,5,6}, learning_rate: {0.03, 0.05, 0.1}, reg_lambda ∈ {1, 10}, subsample ∈ {0.85, 1.0}. CV uses 3 chronological folds with negative-RMSE scoring. The selected configuration is:… . Final model fit with n boosting rounds.\nGAM: smooth splines on the 7 continuous features (mean temp, total precip, max gust, 5-day temp anomaly, lagged return, 5-day vol, market return) plus a factor term for extreme_any.\n\nReported test statistics are: RMSE, MAE, and \\(R^2\\) for regression; accuracy and ROC-AUC for classification. Additionally, we show variable importance, partial dependence (XGBoost) and partial-effect curves (GAM), and a bias-variance curve."
+  },
+  {
+    "objectID": "report.html#results",
+    "href": "report.html#results",
+    "title": "Extreme Weather and Next-Day TSX Returns",
+    "section": "3 Results",
+    "text": "3 Results"
+  },
+  {
+    "objectID": "report.html#models",
+    "href": "report.html#models",
+    "title": "Extreme Weather and Next-Day TSX Returns",
+    "section": "4 Models",
+    "text": "4 Models"
+  },
+  {
+    "objectID": "report.html#conclusions-and-summary",
+    "href": "report.html#conclusions-and-summary",
+    "title": "Extreme Weather and Next-Day TSX Returns",
+    "section": "5 Conclusions and Summary",
+    "text": "5 Conclusions and Summary"
+  },
+  {
+    "objectID": "viz.html#figure-1-ontario-weather-stations-map",
+    "href": "viz.html#figure-1-ontario-weather-stations-map",
+    "title": "Interactive Visualizations",
+    "section": "Figure 1: Ontario weather stations map",
+    "text": "Figure 1: Ontario weather stations map\ndescription here\n\n\n\nFigure 1 caption. Location and elevation of the n weather stations from the ECCC GeoMet API contributing to the daily Ontario climate panel. —"
+  },
+  {
+    "objectID": "viz.html#figure-2-annual-extreme-events-and-by-sector-next-day-returns",
+    "href": "viz.html#figure-2-annual-extreme-events-and-by-sector-next-day-returns",
+    "title": "Interactive Visualizations",
+    "section": "Figure 2: Annual extreme events and by sector next-day returns",
+    "text": "Figure 2: Annual extreme events and by sector next-day returns\ndesc\n\n\n\nFigure 2 caption. Left: annual frequency of extreme-weather days by type. Right: next-day log-return distributions (in %) by sector, compared between extreme- and normal-weather days."
+  },
+  {
+    "objectID": "viz.html#figure-3-3d-weather-return-view",
+    "href": "viz.html#figure-3-3d-weather-return-view",
+    "title": "Interactive Visualizations",
+    "section": "Figure 3: 3D weather-return view",
+    "text": "Figure 3: 3D weather-return view\ndesc\n\n\n\nFigure 3 caption. 3D scatter of mean temperature, total precipitation, and next-day log return for subsample of ticker-days."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Extreme Weather and TSX Returns",
+    "section": "",
+    "text": "Climate change is shifting the frequency and severity of extreme weather events across the world, and in those scope of this project, across Ontario. Invariably, this results in financial consequences. For instance, storms damage utility infrastructure, ice events halt transportation networks, summer heatwaves spike electricity demand, all feeding back into insurance claims. This project asks whether those physical events are visible the next day in the prices of TSX-listed companies headquartered or heavily exposed in Ontario in the form of banks, insurers, utilities, energy, telecom, and real-estate.\nThe pipeline pulls daily climate observations between 2008 and 2024, from the Environment and Climate Change Canada GeoMet API and 15 TSX equities from Yahoo Finance. It then engineers daily extreme-weather flags (top-/bottom-5% temperature, precipitation, wind), and trains three models (Random Forest, XGBoost, and a GAM) to predict next-day log return."
+  },
+  {
+    "objectID": "index.html#a-brief-overview",
+    "href": "index.html#a-brief-overview",
+    "title": "Extreme Weather and TSX Returns",
+    "section": "",
+    "text": "Climate change is shifting the frequency and severity of extreme weather events across the world, and in those scope of this project, across Ontario. Invariably, this results in financial consequences. For instance, storms damage utility infrastructure, ice events halt transportation networks, summer heatwaves spike electricity demand, all feeding back into insurance claims. This project asks whether those physical events are visible the next day in the prices of TSX-listed companies headquartered or heavily exposed in Ontario in the form of banks, insurers, utilities, energy, telecom, and real-estate.\nThe pipeline pulls daily climate observations between 2008 and 2024, from the Environment and Climate Change Canada GeoMet API and 15 TSX equities from Yahoo Finance. It then engineers daily extreme-weather flags (top-/bottom-5% temperature, precipitation, wind), and trains three models (Random Forest, XGBoost, and a GAM) to predict next-day log return."
+  },
+  {
+    "objectID": "index.html#findings",
+    "href": "index.html#findings",
+    "title": "Extreme Weather and TSX Returns",
+    "section": "Findings",
+    "text": "Findings"
+  },
+  {
+    "objectID": "index.html#navigation",
+    "href": "index.html#navigation",
+    "title": "Extreme Weather and TSX Returns",
+    "section": "Navigation",
+    "text": "Navigation\n\nReport\nInteractive Visualizations — plotly views (Homework 5).\nGitHub repository"
+  },
+  {
+    "objectID": "index.html#links",
+    "href": "index.html#links",
+    "title": "Extreme Weather and TSX Returns",
+    "section": "Links",
+    "text": "Links\n\nPDF report\nvideo walkthrough\nGitHub\nLive website: https://hugo-fuhrer.github.io/JSC370-finalproject"
+  }
+]
