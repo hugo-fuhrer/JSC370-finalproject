@@ -1,0 +1,5 @@
+model,test_rmse,test_mae,test_r2,oob_r2
+Naive (train mean),0.01182,0.00852,-0.0,
+Random Forest,0.01194,0.0086,-0.0203,0.2859
+XGBoost,0.01191,0.00857,-0.0147,
+GAM,0.0132,0.00882,-0.246,

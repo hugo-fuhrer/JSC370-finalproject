@@ -1,0 +1,23 @@
+dataset,n_rows,variable,pct_missing
+raw_weather (per-station daily),761060,mean_temp,14.57
+raw_weather (per-station daily),761060,max_temp,11.31
+raw_weather (per-station daily),761060,min_temp,11.23
+raw_weather (per-station daily),761060,total_precip,13.9
+raw_weather (per-station daily),761060,total_snow,47.92
+raw_weather (per-station daily),761060,max_gust,63.38
+raw_prices (daily close),4265,BCE.TO,0.0
+raw_prices (daily close),4265,BMO.TO,0.0
+raw_prices (daily close),4265,BNS.TO,0.0
+raw_prices (daily close),4265,CM.TO,0.0
+raw_prices (daily close),4265,EMA.TO,0.0
+raw_prices (daily close),4265,ENB.TO,0.0
+raw_prices (daily close),4265,FTS.TO,0.0
+raw_prices (daily close),4265,IFC.TO,0.0
+raw_prices (daily close),4265,L.TO,0.0
+raw_prices (daily close),4265,MFC.TO,0.0
+raw_prices (daily close),4265,POW.TO,0.0
+raw_prices (daily close),4265,REI-UN.TO,0.0
+raw_prices (daily close),4265,RY.TO,0.0
+raw_prices (daily close),4265,SU.TO,0.0
+raw_prices (daily close),4265,TD.TO,0.0
+raw_prices (daily close),4265,XIU.TO,0.0
