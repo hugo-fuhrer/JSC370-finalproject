@@ -14,6 +14,8 @@ website:
         text: Report
       - href: viz.qmd
         text: Interactive Visualizations
+      - href: figures.qmd
+        text: Figures
     right:
       - icon: github
         href: https://github.com/hugo-fuhrer/JSC370-finalproject

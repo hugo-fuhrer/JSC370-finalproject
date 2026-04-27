@@ -1,0 +1,37 @@
+---
+title: "Figures"
+---
+
+## Weather
+
+![**Figure 1.** Temperature distribution with extreme thresholds.](figures/fig01_temp_distribution.png)
+
+![**Figure 2.** Annual extreme event counts by type.](figures/fig02_extreme_counts.png)
+
+## Returns
+
+![**Figure 3.** Cumulative log returns by sector.](figures/fig03_cumulative_returns.png)
+
+![**Figure 4.** Next-day return distributions, extreme vs normal days.](figures/fig04_ndr_distribution.png)
+
+![**Figure 5.** Return boxplots by sector and weather regime.](figures/fig05_box_by_sector.png)
+
+![**Figure 6.** Monthly temperature vs average next-day return.](figures/fig06_monthly_temp_vs_ndr.png)
+
+![**Figure 7.** Correlation heatmap.](figures/fig07_correlation_heatmap.png)
+
+## Modelling
+
+![**Figure 8.** XGBoost feature importance.](figures/fig08_xgb_importance.png)
+
+![**Figure 9.** Random Forest feature importance.](figures/fig09_rf_importance.png)
+
+![**Figure 10.** Partial dependence plots — XGBoost.](figures/fig10_pdp.png)
+
+![**Figure 11.** GAM partial-effect curves with 95% CIs.](figures/fig11_gam_partial.png)
+
+![**Figure 12.** Predicted vs actual returns — XGBoost test set.](figures/fig12_pred_vs_actual.png)
+
+![**Figure 13.** ROC curves.](figures/fig13_roc.png)
+
+![**Figure 14.** Bias-variance trade-off — XGBoost.](figures/fig14_bias_variance.png)
