@@ -1,0 +1,39 @@
+---
+title: "Interactive Visualizations"
+subtitle: "Homework 5"
+---
+
+---
+
+## Figure 1: Ontario weather stations map
+
+description here
+
+<iframe src="docs/viz1_map.html" height="560px" frameborder="0"></iframe>
+
+> **Figure 1 caption.** Location and elevation of the n weather stations
+> from the ECCC GeoMet API contributing to the daily Ontario climate
+> panel.
+---
+
+## Figure 2: Annual extreme events and by sector next-day returns
+
+desc
+
+<iframe src="docs/viz2_dashboard.html" height="560px" frameborder="0"></iframe>
+
+> **Figure 2 caption.** Left: annual frequency of extreme-weather days by
+> type. Right: next-day log-return distributions (in %) by sector,
+> compared between extreme- and normal-weather days.
+
+---
+
+## Figure 3: 3D weather-return view
+
+desc
+
+<iframe src="docs/viz3_3d.html" height="640px" frameborder="0"></iframe>
+
+> **Figure 3 caption.** 3D scatter of mean temperature, total
+> precipitation, and next-day log return for subsample of
+> ticker-days.
