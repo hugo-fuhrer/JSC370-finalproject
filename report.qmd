@@ -11,12 +11,19 @@ format:
 
 ## Introduction
 
-Motivation etc...
+The last four decades have been hotter than any period since records began in 1850, with 2015–2024 constituting the warmest decade on record (UN, 2024). Climate change, however, extends well beyond rising average temperatures — it reshapes precipitation patterns, storm intensity, and the frequency of extreme events worldwide. In Ontario specifically, a report from the Climate Risk Institute found that mean annual temperatures increased by 1.0–1.5 °C between 1948 and 2012. The downstream consequences have already materialized: declining Great Lakes ice cover, a 9.7% normalized increase in the rain fraction of total precipitation, more volatile lake levels, fewer extreme cold days, and a significant rise in days exceeding 30 °C. These shifts manifest as floods, wildfires, and heatwaves of growing intensity and frequency.
 
-We focus on 15 TSX-listed companies with material Ontario exposure, spanning seven sectors: banks (TD, RY, CM, BNS, BMO), insurance (IFC, MFC, POW), utilities (FTS, EMA), energy (ENB, SU), telecom (BCE), real estate (REI-UN), and retail (L), benchmarked against XIU.TO (the iShares S&P/TSX 60 ETF). We pair these with climate observations from 2008 to 2024 from n weather stations across southern Ontario. The questions we test are:
+The economic strain from these events is substantial and cascading. Disaster recovery drives up insurance premiums and diverts public expenditure; utilities absorb restoration costs and foregone revenue; energy firms face volatile demand swings; and retailers suffer disrupted foot traffic. Financial institutions are exposed less directly but no less materially — through mortgage portfolios on properties at elevated flood or fire risk, and through credit extended to small businesses whose operations are weather-sensitive (Canada.ca).
+To investigate these economic impacts empirically, we use equity returns as a high-frequency proxy for economic activity. Financial data offer a practical advantage over slower indicators such as GDP revisions, insurance claims, or post-disaster damage surveys: stock prices are continuously recorded, publicly available, and react in near real-time to new information. If extreme-weather signals are detectable in daily returns, equity markets can function as a real-time sensor of physical climate impacts — complementing, rather than replacing, the broader toolkit of climate economics.
 
-1. **Regression.** Does an extreme-weather day move tomorrow's log return for these tickers?
-2. **Classification.** Does extreme weather shift the probability that the next day's return is positive?
+We focus on 15 TSX-listed companies with material Ontario exposure, spanning seven sectors: banks (TD, RY, CM, BNS, BMO), insurance (IFC, MFC, POW), utilities (FTS, EMA), energy (ENB, SU), telecom (BCE), real estate (REI-UN), and retail (L), benchmarked against XIU.TO (the iShares S&P/TSX 60 ETF). These are paired with daily climate observations from n Environment Canada weather stations across southern Ontario over the period 2008–2024. 
+
+We address two empirical questions:
+1. Regression: Does an extreme-weather day in Ontario produce a measurably different next-day log return for these tickers?
+2. Classification: Does extreme weather shift the probability that the next-day return is positive?
+
+These questions carry significance beyond portfolio management. A validated weather–return signal provides empirical evidence that extreme weather creates measurable, near-term economic disruption — a link that can directly strengthen the case for climate adaptation investment at the provincial and municipal level. Infrastructure expenditures on flood defences, grid hardening, and urban heat mitigation routinely face political resistance on cost grounds; quantifying the next-day economic footprint of extreme events gives planners concrete, market-derived evidence to cite. As the Government of Canada notes, every dollar spent on climate adaptation saves up to $15 in long-term damage and mitigation costs — and a market-validated signal makes that calculus harder to dismiss.
+
 
 ## Methods
 
@@ -51,6 +58,10 @@ The four models are:
 Reported test statistics are: RMSE, MAE, and $R^2$ for regression; accuracy and ROC-AUC for classification. Additionally, we show variable importance, partial dependence (XGBoost) and partial-effect curves (GAM), and a bias-variance curve.
 
 ## Results
+
+### Weather
+
+
 
 ## Models 
 
