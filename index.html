@@ -130,7 +130,6 @@ ul.task-list li input[type="checkbox"] {
    
   <ul>
   <li><a href="#a-brief-overview" id="toc-a-brief-overview" class="nav-link active" data-scroll-target="#a-brief-overview">A brief overview…</a></li>
-  <li><a href="#findings" id="toc-findings" class="nav-link" data-scroll-target="#findings">Findings</a></li>
   <li><a href="#navigation" id="toc-navigation" class="nav-link" data-scroll-target="#navigation">Navigation</a></li>
   <li><a href="#links" id="toc-links" class="nav-link" data-scroll-target="#links">Links</a></li>
   </ul>
@@ -163,9 +162,6 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="a-brief-overview">A brief overview…</h2>
 <p>Climate change is shifting the frequency and severity of extreme weather events across the world, and in those scope of this project, across Ontario. Invariably, this results in financial consequences. For instance, storms damage utility infrastructure, ice events halt transportation networks, summer heatwaves spike electricity demand, all feeding back into insurance claims. This project asks whether those physical events are visible the next day in the prices of TSX-listed companies headquartered or heavily exposed in Ontario in the form of banks, insurers, utilities, energy, telecom, and real-estate.</p>
 <p>The pipeline pulls daily climate observations between 2008 and 2024, from the <a href="https://api.weather.gc.ca/">Environment and Climate Change Canada GeoMet API</a> and 15 TSX equities from <a href="https://finance.yahoo.com/">Yahoo Finance</a>. It then engineers daily extreme-weather flags (top-/bottom-5% temperature, precipitation, wind), and trains three models (Random Forest, XGBoost, and a GAM) to predict next-day log return.</p>
-</section>
-<section id="findings" class="level2">
-<h2 class="anchored" data-anchor-id="findings">Findings</h2>
 </section>
 <section id="navigation" class="level2">
 <h2 class="anchored" data-anchor-id="navigation">Navigation</h2>

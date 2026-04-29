@@ -130,8 +130,8 @@ ul.task-list li input[type="checkbox"] {
    
   <ul>
   <li><a href="#figure-1-ontario-weather-stations-map" id="toc-figure-1-ontario-weather-stations-map" class="nav-link active" data-scroll-target="#figure-1-ontario-weather-stations-map">Figure 1: Ontario weather stations map</a></li>
-  <li><a href="#figure-2-annual-extreme-events-and-by-sector-next-day-returns" id="toc-figure-2-annual-extreme-events-and-by-sector-next-day-returns" class="nav-link" data-scroll-target="#figure-2-annual-extreme-events-and-by-sector-next-day-returns">Figure 2: Annual extreme events and by sector next-day returns</a></li>
-  <li><a href="#figure-3-3d-weather-return-view" id="toc-figure-3-3d-weather-return-view" class="nav-link" data-scroll-target="#figure-3-3d-weather-return-view">Figure 3: 3D weather-return view</a></li>
+  <li><a href="#figure-2-annual-extreme-events-and-next-day-returns-by-sector" id="toc-figure-2-annual-extreme-events-and-next-day-returns-by-sector" class="nav-link" data-scroll-target="#figure-2-annual-extreme-events-and-next-day-returns-by-sector">Figure 2: Annual extreme events and next-day returns by sector</a></li>
+  <li><a href="#figure-3-3d-weatherreturn-view" id="toc-figure-3-3d-weatherreturn-view" class="nav-link" data-scroll-target="#figure-3-3d-weatherreturn-view">Figure 3: 3D weather–return view</a></li>
   </ul>
 </nav>
     </div>
@@ -161,30 +161,31 @@ ul.task-list li input[type="checkbox"] {
 <hr>
 <section id="figure-1-ontario-weather-stations-map" class="level2">
 <h2 class="anchored" data-anchor-id="figure-1-ontario-weather-stations-map">Figure 1: Ontario weather stations map</h2>
-<p>description here</p>
+<p>This map shows the 178 Environment Canada GeoMet stations that fall inside the southern-Ontario bounding box used in the analysis (lon ∈ [−83, −74.5], lat ∈ [41.5, 46.5]). Coverage is densest along the Windsor–Toronto–Ottawa corridor where most of the population — and the operational footprint of the 15 tickers — is concentrated. Hovering on a marker reveals the station name, elevation, and the date of its most recent daily report; this helps explain the per-station missingness reported in the data-quality table, since not every station reports every variable on every day.</p>
 <iframe src="docs/viz1_map.html" height="560px" frameborder="0">
 </iframe>
 <blockquote class="blockquote">
-<p><strong>Figure 1 caption.</strong> Location and elevation of the n weather stations from the ECCC GeoMet API contributing to the daily Ontario climate panel. —</p>
-</blockquote>
-</section>
-<section id="figure-2-annual-extreme-events-and-by-sector-next-day-returns" class="level2">
-<h2 class="anchored" data-anchor-id="figure-2-annual-extreme-events-and-by-sector-next-day-returns">Figure 2: Annual extreme events and by sector next-day returns</h2>
-<p>desc</p>
-<iframe src="docs/viz2_dashboard.html" height="560px" frameborder="0">
-</iframe>
-<blockquote class="blockquote">
-<p><strong>Figure 2 caption.</strong> Left: annual frequency of extreme-weather days by type. Right: next-day log-return distributions (in %) by sector, compared between extreme- and normal-weather days.</p>
+<p><strong>Figure 1 caption.</strong> Location and elevation of the 178 weather stations from the ECCC GeoMet API contributing to the daily Ontario climate panel (2008–2024). Between 114 and 151 stations are active in any given year; the map shows every station that reported at least once during the period.</p>
 </blockquote>
 <hr>
 </section>
-<section id="figure-3-3d-weather-return-view" class="level2">
-<h2 class="anchored" data-anchor-id="figure-3-3d-weather-return-view">Figure 3: 3D weather-return view</h2>
-<p>desc</p>
+<section id="figure-2-annual-extreme-events-and-next-day-returns-by-sector" class="level2">
+<h2 class="anchored" data-anchor-id="figure-2-annual-extreme-events-and-next-day-returns-by-sector">Figure 2: Annual extreme events and next-day returns by sector</h2>
+<p>The left panel decomposes the 5%-tail extreme days by type — cold, heat, precipitation, and wind — over 2008–2024. The right panel shows the central question of the analysis: do next-day returns differ on extreme-weather days versus normal days, broken out by sector? The blue (Normal) and red (Extreme) boxes overlap almost entirely across all seven sectors. Medians sit within a few basis points of zero, IQR widths are roughly identical. This is the visual version of the null result in the conclusion of the report: whatever weather signal exists is small relative to daily return noise.</p>
+<iframe src="docs/viz2_dashboard.html" height="560px" frameborder="0">
+</iframe>
+<blockquote class="blockquote">
+<p><strong>Figure 2 caption.</strong> Left: annual frequency of extreme-weather days by type (5th/95th-percentile thresholds on mean temperature, total precipitation, and maximum gust). Right: next-day log-return distributions (in %) by sector, split between extreme- and normal-weather days. Boxes show the IQR; whiskers extend to 1.5×IQR; points beyond are outliers.</p>
+</blockquote>
+<hr>
+</section>
+<section id="figure-3-3d-weatherreturn-view" class="level2">
+<h2 class="anchored" data-anchor-id="figure-3-3d-weatherreturn-view">Figure 3: 3D weather–return view</h2>
+<p>This figure plots every ticker-day in the panel (~64,000 points) along three axes: mean Ontario temperature on the day, total precipitation, and the resulting next-day log return. Points are coloured by sector and shaded by weather regime (extreme vs.&nbsp;normal), and the chart can be rotated.There is no visible tilt, funnel, or clustering of returns at any combination of weather conditions. The overlap between the Normal and Extreme markers within each sector echoes the boxplot panel above.</p>
 <iframe src="docs/viz3_3d.html" height="640px" frameborder="0">
 </iframe>
 <blockquote class="blockquote">
-<p><strong>Figure 3 caption.</strong> 3D scatter of mean temperature, total precipitation, and next-day log return for subsample of ticker-days.</p>
+<p><strong>Figure 3 caption.</strong> 3D scatter of mean temperature (°C), total precipitation (mm), and next-day log return (%) for the full panel of 15 tickers × 4,261 trading days (n ≈ 63,900 ticker-days, 2008–2024). Colour encodes sector; opacity encodes weather regime (extreme vs. normal).</p>
 </blockquote>
 
 
