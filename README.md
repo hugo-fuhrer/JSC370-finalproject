@@ -1,1 +1,14 @@
-# JSC370-finalproject
+# JSC370 Final Project
+
+## A brief overview...
+
+Climate change is shifting the frequency and severity of extreme weather events across the world, and in those scope of this project, across Ontario. Invariably, this results in financial consequences. For instance, storms damage utility infrastructure, ice events halt transportation networks, summer heatwaves spike electricity demand, all feeding back into insurance claims. This project asks whether those physical events are visible the next day in the prices of TSX-listed companies headquartered or heavily exposed in Ontario in the form of banks, insurers, utilities, energy, telecom, and real-estate.
+
+The pipeline pulls daily climate observations between 2008 and 2024, from the [Environment and Climate Change Canada GeoMet API](https://api.weather.gc.ca/) and 15 TSX equities from [Yahoo Finance](https://finance.yahoo.com/). It then engineers daily extreme-weather flags (top-/bottom-5% temperature, precipitation, wind), and trains three models (Random Forest, XGBoost, and a GAM) to predict next-day log return.
+
+
+## Links
+
+- [video walkthrough]()
+- [GitHub](https://github.com/hugo-fuhrer/JSC370-finalproject)
+- Live website: `https://hugo-fuhrer.github.io/JSC370-finalproject`

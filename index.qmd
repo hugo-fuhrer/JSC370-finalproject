@@ -9,8 +9,6 @@ Climate change is shifting the frequency and severity of extreme weather events 
 
 The pipeline pulls daily climate observations between 2008 and 2024, from the [Environment and Climate Change Canada GeoMet API](https://api.weather.gc.ca/) and 15 TSX equities from [Yahoo Finance](https://finance.yahoo.com/). It then engineers daily extreme-weather flags (top-/bottom-5% temperature, precipitation, wind), and trains three models (Random Forest, XGBoost, and a GAM) to predict next-day log return.
 
-## Findings
-
 ## Navigation
 
 - **[Report](report.qmd)** 
