@@ -53,17 +53,15 @@ Stock prices are pulled with the `yfinance` package, which uses Yahoo Finance's 
 
 ```{python}
 dq = pd.read_csv(DATA / "data_quality.csv")
-dq_show = pd.concat([
-    dq[dq["dataset"].str.startswith("raw_weather")],
-    dq[dq["dataset"].str.startswith("raw_prices")]
-       .nlargest(5, "pct_missing"),
-])
+dq_show = dq[dq["dataset"].str.startswith("raw_weather")].nlargest(5, "pct_missing")
 dq_show = dq_show.rename(columns={
     "dataset": "Dataset", "n_rows": "Rows",
     "variable": "Variable", "pct_missing": "% Missing"
 })
 display(dq_show.to_html(index=False, classes="table", border=0))
 ```
+
+The raw weather data was collected from a total of 178 stations, although there is some fluctuation as to how many are active throughout the years and how many variables they report on any given day. This is reflected in the percent missingness (per-station daily), where snow and max_gust are missing 48% and 63% respectively. Aggregating these variables allows us to remove this missingness and match the trading data which had 0% missingness.
 
 ### Feature engineering
 
@@ -86,6 +84,8 @@ Reported test statistics are: RMSE, MAE, and $R^2$ for regression; accuracy and 
 
 ## Results
 
+We split the results into two parts, the first addressing findings directly from the data and the second discussing the machine learning models.
+
 ### Weather
 
 ```{python}
@@ -96,6 +96,14 @@ ws = ws[["Variable", "count", "mean", "std", "min", "5%", "25%",
 display(ws.to_html(index=False, classes="table", border=0))
 ```
 
+Table 1 summarises the distributions of the core weather variables. Mean daily temperature stits at 7.71 degrees celcius, with a wide standard distribution of 10.63 degrees. It follows a somewhat bimodal distribution as per Figure 1 below, with a mode just above 0 degrees, and another just under 20. Both the table and the figure show the threshod 5% and 95% extreme cold and hot days respectivley, corresponding to -10.6 degrees, and 22.5 degrees. Logically, percipitation, snow and gust all have a minimum value of 0, and tend to be right skewed.
+
+![**Figure 1.** Distribution of Ontario daily mean temperature (2008–2024, n = 6,210 days). Dashed lines mark the 5th and 95th percentiles (−2.1 °C and 18.1 °C) used to define `extreme_cold` and `extreme_heat`. The bimodal shape reflects the seasonal split between winter and summer modes typical of southern Ontario.](figures/fig01_temp_distribution.png){#fig-temp-dist}
+
+We dive a bit deeper into extreme weather days with Figure 2, however no obvious trends are present at this time scale compared to more obvious plots starting from the 1800s.
+
+![**Figure 2.** Annual count of extreme-weather days by type. Each colour is a percentile threshold; bars are dodged for visual comparison. Counts cluster around the expected ~18 days/year per type with mild year-to-year variation.](figures/fig02_extreme_counts.png){#fig-extreme-counts}
+
 
 ### Returns
 
@@ -104,12 +112,33 @@ rs = pd.read_csv(DATA / "table2_ret_summary.csv")
 display(rs.to_html(index=False, classes="table", border=0))
 ```
 
+Mean daily log returns ranges from 0.009% (SU.TO - Energy) to 0.054% (IFC.TO - Insurance), with a reasonable volaity ordering rougly following Energy and Insurance as the most volatile, with Utilies and Retail at the low end and Banks somehwere in between.
+
+We can see patterns emerge over time with Figure 3 wherein we clearly see the financial in 2008 and the COVID drawdown in 2020 across every sector, confirming that the broad market factor dominates daily movement. Secondly, we can notice the dispersion among sectors, with banks and retail compounding faster than utilities, telecom, or the real-estate.
+
+![**Figure 3.** Cumulative log returns by sector, 2008–2024. The 2008 financial crisis and 2020 COVID shock are visible across all sectors. Banks and energy compound the fastest; utilities and telecom are flatter and less volatile; the retail single-name (L.TO) under-performs over much of the sample.](figures/fig03_cumulative_returns.png){#fig-cum-returns}
+
 
 ### Extreme-Normal
 ```{python}
 t3 = pd.read_csv(DATA / "table3_extreme_vs_normal.csv")
 display(t3.to_html(index=False, classes="table", border=0))
 ```
+
+Table 3 shows the difference in basis points of return on normal days vs extreme days. Most are positive, with Utilities and Insurance having a plausible economic mechanism of signalling increased demand for energy and premiums increases, while Retail is one of the only two negative differences and could be explained by a lack of foot traffic or forced closures. However we must keep in mind that these differences are well within the daily volatility and thus probably do not offer much significance. These differences can be further explored visually with Figures 4 and 5, were the distributions match in the histogram and the ranges overlap in the boxplots showing that while the signal exists, it is quite small, especially relative to noise.
+
+
+![**Figure 4.** Next-day log return distribution by ticker, split by whether the previous day was an extreme-weather day. The extreme-day densities (red) sit almost entirely on top of the normal-day densities (blue) for every ticker, indicating that the unconditional descriptive difference shown in Table 3 is small relative to the underlying return dispersion.](figures/fig04_ndr_distribution.png){#fig-ndr-dist}
+
+![**Figure 5.** Next-day return boxplots by sector and weather regime. Bands are tight at the 25th–75th percentiles around zero; the difference between extreme and normal medians is too small to see at the box scale.](figures/fig05_box_by_sector.png){#fig-box-sector}
+
+The temperature-vs-returns scatter in Figure 6 shows a flat sloped line with a 95% confidence interval cointaining 0, confirming there is no linear relationship at the aggregate level.
+
+![**Figure 6.** Monthly mean Ontario temperature vs average next-day TSX return. The OLS line is essentially flat with wide confidence bands, suggesting no monotonic temperature-return relationship at the monthly aggregation.](figures/fig06_monthly_temp_vs_ndr.png){#fig-monthly-temp}
+
+In the correlation heatmap (Figure 7) we see that the strongest off-diagonal correlations are between weather features themselves (e.g., 0.28 between mean temperature and total precipitation, -0.17 between max gust and temperature). Notably, most weather features have almost no correlation with market returns.
+
+![**Figure 7.** Correlation matrix between weather features (mean_temp, total_precip, max_gust, temp_5d_anom) and return features (lagged_return, mkt_return, next_day_return). All weather-return correlations are within ±0.02; the strongest non-trivial correlation is the +0.30 mean_temp ↔ total_precip link from summer rain.](figures/fig07_correlation_heatmap.png){#fig-corr-heat}
 ## Models 
 
 ### Performance
