@@ -1,0 +1,145 @@
+---
+title: "Extreme Weather and Next-Day TSX Returns"
+format:
+  pdf:
+    toc: false
+    number-sections: true
+    fig-cap-location: bottom
+    tbl-cap-location: top
+    geometry:
+      - margin=0.85in
+    fontsize: 10pt
+    linestretch: 1.05
+    fig-pos: "H"
+    include-in-header:
+      text: |
+        \usepackage{float}
+        \usepackage{caption}
+        \captionsetup{font=small,skip=2pt}
+        \setlength{\textfloatsep}{4pt plus 1pt minus 1pt}
+        \setlength{\floatsep}{4pt plus 1pt minus 1pt}
+        \setlength{\intextsep}{4pt plus 1pt minus 1pt}
+        \setlength{\abovecaptionskip}{2pt}
+        \setlength{\belowcaptionskip}{2pt}
+        \setlength{\parskip}{2pt}
+---
+
+## Introduction
+
+The last four decades have been hotter than any period since records began in 1850, with 2015–2024 the warmest decade on record (UN, 2024). In Ontario specifically, mean annual temperatures rose by 1.0–1.5 °C between 1948 and 2012 (Climate Risk Institute), with downstream consequences already visible: declining Great Lakes ice cover, a 9.7% normalized increase in the rain fraction of total precipitation, fewer extreme cold days, and more days exceeding 30 °C. The economic strain is cascading — disaster recovery raises insurance premiums and public expenditure, utilities absorb restoration costs, energy firms face volatile demand, and retailers lose foot traffic. Financial institutions are exposed indirectly through mortgage portfolios on flood- or fire-prone properties and credit to weather-sensitive small businesses (Canada.ca).
+
+We use equity returns as a high-frequency proxy for economic activity: stock prices are continuously recorded and react in near real time, complementing slower indicators like GDP revisions or insurance claims. Our universe is 15 TSX-listed firms with material Ontario exposure across seven sectors — banks (TD, RY, CM, BNS, BMO), insurance (IFC, MFC, POW), utilities (FTS, EMA), energy (ENB, SU), telecom (BCE), real estate (REI-UN), retail (L) — benchmarked against XIU.TO. We pair these with daily climate observations from up to 178 Environment Canada stations across southern Ontario over 2008–2024 (114–151 active in any given year).
+
+We address two empirical questions: **(i) Regression** — does an extreme-weather day in Ontario produce a measurably different next-day log return? **(ii) Classification** — does extreme weather shift the probability that the next-day return is positive? A validated weather–return signal would offer market-derived evidence for climate adaptation investment, where the Government of Canada notes every dollar spent saves up to $15 in long-term damage.
+
+## Methods
+
+**Data.** Weather data is collected from the Meteorological Service of Canada GeoMet OGC API (`api.weather.gc.ca`) for stations within a southern Ontario bounding box (lon $\in [-83,-74.5]$, lat $\in [41.5, 46.5]$). For each station we paginate `/collections/climate-daily/items` and pull six daily variables: mean/max/min temperature (°C), total precipitation (mm), total snowfall (cm), and maximum wind gust (km/h). Stock prices come from `yfinance`; we convert adjusted closes to daily log returns $r_t = \ln(P_t / P_{t-1})$.
+
+**Missingness.** Per-station daily missingness is high for max gust (63%) and snow (48%), and moderate for the temperature variables (11–15%). Aggregating across all reporting stations on each day produces a gap-free daily series. Trading data has 0% missingness.
+
+**Feature engineering.** Extreme-weather flags use whole-period percentile thresholds: `extreme_cold` (bottom 5% mean temp), `extreme_heat` (top 5%), `extreme_precip` (top 5%), `extreme_wind` (top 5% gust); `extreme_any = 1` if any flag fires. Continuous features include standardised temperature (`temp_z`), a 5-day temperature anomaly, and standardised precipitation/wind. Financial controls are lagged returns ($r_{t-1}$, $r_{t-2}$), a 5-day rolling mean, a 5-day rolling volatility, and the contemporaneous market return. Calendar features (`month`, `dow`) and one-hot sector dummies complete the set. All rolling/lagged features use information available only at $t-1$ to avoid look-ahead bias. The final matrix has 21 predictors; the target is the next-day log return (regression) or its sign (classification).
+
+**Train/test split and models.** Chronological split: train < 2022-01-01, test ≥ 2022-01-01. Four models: (i) a **naive baseline** that predicts the train mean; (ii) **Random Forest** (200 trees, `max_features=sqrt(p)`, `min_samples_leaf=10`, OOB scoring on); (iii) **XGBoost**, selected via 5-iteration randomized search over `max_depth ∈ {3,4,5,6}`, `learning_rate ∈ {0.03, 0.05, 0.1}`, `reg_lambda ∈ {1, 10}`, `subsample ∈ {0.85, 1.0}` with 3 chronological CV folds — final config `max_depth=4, lr=0.05, reg_lambda=10, reg_alpha=0.1`, ~80 boosting rounds with early stopping; (iv) **GAM** with smooth splines on 7 continuous features plus a factor term for `extreme_any`. We report RMSE/MAE/$R^2$ for regression and accuracy/AUC for classification.
+
+## Results
+
+### Weather
+
+Table 1 summarises the four core daily weather variables. Mean daily temperature sits at 7.71 °C with a wide standard deviation of 10.63 °C and a bimodal distribution (Figure 1) reflecting the seasonal split between winter and summer modes. The 5%/95% thresholds defining extreme cold and heat days are −10.63 °C and 22.48 °C. Precipitation, snow, and gust are bounded below by zero and right-skewed.
+
+**Table 1.** Daily weather summary, aggregated across reporting stations (n = 6,210 days).
+
+| Variable | mean | std | min | 5% | 50% | 95% | max |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| Mean Temp (°C) | 7.71 | 10.63 | −22.28 | −10.63 | 8.11 | 22.48 | 28.56 |
+| Total Precip (mm) | 18.18 | 19.11 | 0.00 | 0.80 | 12.60 | 55.00 | 240.00 |
+| Total Snow (cm) | 3.58 | 7.15 | 0.00 | 0.00 | 0.00 | 19.00 | 71.00 |
+| Max Gust (km/h) | 60.75 | 17.60 | 0.00 | 37.00 | 59.00 | 91.00 | 220.00 |
+
+![Distribution of Ontario daily mean temperature (2008–2024, n = 6,210). Dashed lines mark the 5th and 95th percentiles defining `extreme_cold` and `extreme_heat`.](figures/fig01_temp_distribution.png){#fig-temp-dist width=70%}
+
+Annual extreme-event counts by type show no obvious 17-year trend at this horizon, though longer-horizon climate trends are well established. The interactive HTML version of this figure (linked in the companion visualization page) supports zooming into individual years.
+
+### Returns
+
+Mean daily log returns range from 0.018% (Telecom) to 0.052% (Retail) at the sector level (Table 2), with volatility highest for Energy (~30%) and Insurance (~27%) and lowest for Utilities (~18%). Cumulative returns (Figure 2) make the 2008 financial crisis and 2020 COVID drawdown visible across every sector — confirming the broad market factor dominates daily movement — and show banks and retail compounding faster than utilities, telecom, or the REIT.
+
+**Table 2.** Sector-level mean daily log return and annualized volatility (2008–2024).
+
+| Sector | # tickers | Mean Ret (%) | Ann. Vol. (%) | Ticker-days |
+|---|---:|---:|---:|---:|
+| Bank | 5 | 0.039 | 22.63 | 21,305 |
+| Energy | 2 | 0.027 | 30.53 | 8,522 |
+| Insurance | 3 | 0.032 | 27.01 | 12,783 |
+| REIT | 1 | 0.021 | 22.79 | 4,261 |
+| Retail | 1 | 0.052 | 19.83 | 4,261 |
+| Telecom | 1 | 0.018 | 20.93 | 4,261 |
+| Utilities | 2 | 0.036 | 18.12 | 8,522 |
+
+![Cumulative log returns by sector, 2008–2024.](figures/fig03_cumulative_returns.png){#fig-cum-returns width=75%}
+
+### Extreme vs. normal days
+
+Table 3 compares mean next-day returns on normal vs. extreme-weather days at the sector level. Five of seven sector differences are positive: Insurance (+4.1 bp) and Utilities (+4.3 bp) lead, with plausible mechanisms — premium revisions, increased energy demand — followed by REIT (+3.2 bp) and Banks (+2.8 bp). Retail (−7.1 bp) is the largest negative, consistent with reduced foot traffic or forced closures, and Energy (−0.7 bp) is marginally negative. These differences are within daily volatility and are not formally tested; they should not be over-interpreted. The sector boxplots and the per-ticker return histogram in the companion interactive visualization page reinforce this: distributions overlap almost completely between regimes.
+
+**Table 3.** Mean next-day log return (%) on normal vs. extreme-weather days, sector-level.
+
+| Sector | Normal (%) | Extreme (%) | Diff (bp) |
+|---|---:|---:|---:|
+| Bank | 0.0334 | 0.0609 | +2.76 |
+| Energy | 0.0286 | 0.0218 | −0.69 |
+| Insurance | 0.0245 | 0.0660 | +4.15 |
+| REIT | 0.0155 | 0.0472 | +3.18 |
+| Retail | 0.0655 | −0.0060 | −7.15 |
+| Telecom | 0.0138 | 0.0330 | +1.92 |
+| Utilities | 0.0283 | 0.0709 | +4.26 |
+
+![Correlation matrix between weather features and return features.](figures/fig07_correlation_heatmap.png){#fig-corr-heat width=65%}
+
+In the correlation heatmap (Figure 3) the strongest off-diagonal correlations are between weather features themselves (e.g. 0.28 between mean temperature and total precipitation, −0.17 between max gust and temperature). Every weather feature has near-zero correlation with next-day returns.
+
+## Models
+
+The final feature matrix has 21 columns: 8 weather features (mean temp, total precip, total snow, max gust, 5-day temp anomaly, four `extreme_*` flags), 5 financial controls (lagged return, 2-day lag, rolling 5-day return, rolling 5-day vol, market return), 2 calendar features, and 6 sector dummies. The chronological split places the test period (2022–2024) entirely after training (2008–2021).
+
+### Performance
+
+**Table 4.** Test-set regression performance (test period: 2022-01-01 onward). OOB R² is reported only for Random Forest, computed within the training period.
+
+| Model | Test RMSE | Test MAE | Test R² | OOB R² |
+|---|---:|---:|---:|---:|
+| Naive (train mean) | 0.01182 | 0.00852 | −0.000 | — |
+| Random Forest | 0.01194 | 0.00860 | −0.020 | 0.286 |
+| XGBoost | 0.01191 | 0.00857 | −0.015 | — |
+| GAM | 0.01320 | 0.00882 | −0.246 | — |
+
+No model beats the naive baseline. Test $R^2$ is slightly negative for the tree-based models (RF: −0.020; XGB: −0.015) and meaningfully negative for the GAM (−0.246). Two complementary explanations apply.
+
+First, the bias–variance trade-off for XGBoost (Figure 4) shows training RMSE falling monotonically from 0.0150 to 0.0130 as boosting rounds increase from 20 to 200, while test RMSE stays flat — the model is fitting noise rather than signal, validating the early-stopping strategy. Second, Random Forest's OOB $R^2$ of 0.286 is dramatically higher than its test $R^2$ of −0.020. Since OOB is computed within the 2008–2021 training period, this gap primarily reflects **distribution shift** between train and test periods, not overfitting alone — post-COVID monetary policy, interest-rate normalization, and inflation dynamics from 2022 onward have no comparable analogue in the training window.
+
+![Bias-variance trade-off for XGBoost as a function of boosting rounds.](figures/fig14_bias_variance.png){#fig-bv width=65%}
+
+### Variable importance
+
+XGBoost and Random Forest mostly agree on the ranking (Figures 5 and 6). XGBoost's top features are `temp_5d_anom` (gain ≈ 0.106), `extreme_wind` (0.102), `mkt_return` (0.085), and `dow` (0.076). Random Forest is led by `mkt_return` (0.182), `roll5_return` (0.102), `roll5_vol` (0.100), `temp_5d_anom` (0.099), and `lag2_return` (0.090). Both agree that the market return dominates, lagged/rolling return features provide some utility, and at least one weather feature (the 5-day temperature anomaly) consistently ranks in the top 5. Sector dummies and binary `extreme_*` flags rank near the bottom — sector differences are weak in this setup, and continuous weather features carry more of whatever signal is available.
+
+![XGBoost feature importance (mean gain), top 15.](figures/fig08_xgb_importance.png){#fig-xgb-imp width=70%}
+
+![Random Forest feature importance.](figures/fig09_rf_importance.png){#fig-rf-imp width=70%}
+
+### Partial dependence
+
+XGBoost partial dependence (Figure 7) shows the strongest shape on `mkt_return` — approximately linear and strongly increasing, so a +1.5% market move yesterday raises the predicted next-day return by ~0.001. `lagged_return` shows a small negative slope (regression to the mean), `roll5_vol` slopes mildly upward (a risk premium), and the rest are flat or noisy.
+
+The GAM partial-effect curves (Figure 8) tell a slightly different story. The smooth on `mkt_return` is monotonically negative with sharp curvature and a narrow CI; `roll5_vol` shows a strong negative slope (high recent volatility predicts lower next-day returns); `lagged_return` is U-shaped. The weather smooths (`mean_temp`, `total_precip`, `max_gust`, `temp_5d_anom`) are mostly flat with wide 95% bands covering zero — only the extreme right tails (e.g. gusts >100 km/h) deviate, and even there the band is wide. The `Extreme Day` discrete-effect panel shows a *negative* partial effect of ~−1.5 bp once continuous features are controlled for, contradicting the descriptive Table 3 finding and reinforcing that the table was capturing market-level patterns rather than weather-driven movement.
+
+![Partial dependence plots — tuned XGBoost.](figures/fig10_pdp.png){#fig-pdp width=80%}
+
+![GAM partial-effect curves with 95% CIs.](figures/fig11_gam_partial.png){#fig-gam width=80%}
+
+## Summary and limitations
+
+The picture is consistent across analyses: there is a small, mechanically plausible association between extreme-weather days and slightly higher next-day returns for utilities, banks, and insurers (Table 3, +2 to +4 bp), and the 5-day temperature anomaly appears in the top-5 features for both tree-based regressors. However, market-return and lagged-return features dominate every model, and no model beats the naive train-mean predictor. Daily TSX-Ontario returns are effectively unpredictable from this feature set, and this null result is itself the answer: at the daily frequency, the weather–return relationship is too weak to be exploited.
+
+**Limitations.** First, the daily horizon may be wrong — extreme-weather damage may show up better in quarterly earnings (insurance claims, utility restoration costs); a follow-up at weekly or monthly horizons would likely surface stronger effects. Second, province-wide aggregation averages out spatial variation that matters for individual firms. Third, several tickers have material operations outside Ontario, diluting any Ontario-specific signal in their returns.
