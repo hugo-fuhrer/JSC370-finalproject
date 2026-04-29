@@ -10,6 +10,6 @@ The pipeline pulls daily climate observations between 2008 and 2024, from the [E
 ## Links
 
 - [PDF report](report_cut.pdf)
-- [video walkthrough]()
+- [video walkthrough](https://github.com/user-attachments/assets/b02ee7be-c5a9-4bb3-b8ad-44997cf6deed)
 - [GitHub](https://github.com/hugo-fuhrer/JSC370-finalproject)
 - [Live website](https://hugo-fuhrer.github.io/JSC370-finalproject)
