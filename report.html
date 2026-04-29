@@ -171,12 +171,9 @@ window.Quarto = {
   <li><a href="#weather" id="toc-weather" class="nav-link" data-scroll-target="#weather"><span class="header-section-number">3.1</span> Weather</a></li>
   <li><a href="#returns" id="toc-returns" class="nav-link" data-scroll-target="#returns"><span class="header-section-number">3.2</span> Returns</a></li>
   <li><a href="#extreme-normal" id="toc-extreme-normal" class="nav-link" data-scroll-target="#extreme-normal"><span class="header-section-number">3.3</span> Extreme-Normal</a></li>
+  <li><a href="#performance" id="toc-performance" class="nav-link" data-scroll-target="#performance"><span class="header-section-number">3.4</span> Performance</a></li>
   </ul></li>
-  <li><a href="#models" id="toc-models" class="nav-link" data-scroll-target="#models"><span class="header-section-number">4</span> Models</a>
-  <ul class="collapse">
-  <li><a href="#performance" id="toc-performance" class="nav-link" data-scroll-target="#performance"><span class="header-section-number">4.1</span> Performance</a></li>
-  </ul></li>
-  <li><a href="#conclusions-and-summary" id="toc-conclusions-and-summary" class="nav-link" data-scroll-target="#conclusions-and-summary"><span class="header-section-number">5</span> Conclusions and Summary</a></li>
+  <li><a href="#conclusions-and-summary" id="toc-conclusions-and-summary" class="nav-link" data-scroll-target="#conclusions-and-summary"><span class="header-section-number">4</span> Conclusions and Summary</a></li>
   </ul>
 </nav>
     </div>
@@ -219,7 +216,7 @@ window.Quarto = {
 </section>
 <section id="data-missingness" class="level3" data-number="2.2">
 <h3 data-number="2.2" class="anchored" data-anchor-id="data-missingness"><span class="header-section-number">2.2</span> Data missingness</h3>
-<div id="ef11b94d" class="cell" data-execution_count="2">
+<div id="e17d454d" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-display">
 <table class="dataframe table table-sm table-striped small">
 
@@ -260,71 +257,11 @@ raw_weather (per-station daily)
 </td>
 
 <td>
-mean_temp
+max_gust
 </td>
 
 <td>
-14.57
-</td>
-
-</tr>
-
-<tr>
-
-<td>
-raw_weather (per-station daily)
-</td>
-
-<td>
-761060
-</td>
-
-<td>
-max_temp
-</td>
-
-<td>
-11.31
-</td>
-
-</tr>
-
-<tr>
-
-<td>
-raw_weather (per-station daily)
-</td>
-
-<td>
-761060
-</td>
-
-<td>
-min_temp
-</td>
-
-<td>
-11.23
-</td>
-
-</tr>
-
-<tr>
-
-<td>
-raw_weather (per-station daily)
-</td>
-
-<td>
-761060
-</td>
-
-<td>
-total_precip
-</td>
-
-<td>
-13.90
+63.38
 </td>
 
 </tr>
@@ -360,31 +297,11 @@ raw_weather (per-station daily)
 </td>
 
 <td>
-max_gust
+mean_temp
 </td>
 
 <td>
-63.38
-</td>
-
-</tr>
-
-<tr>
-
-<td>
-raw_prices (daily close)
-</td>
-
-<td>
-4265
-</td>
-
-<td>
-BCE.TO
-</td>
-
-<td>
-0.00
+14.57
 </td>
 
 </tr>
@@ -392,39 +309,19 @@ BCE.TO
 <tr>
 
 <td>
-raw_prices (daily close)
+raw_weather (per-station daily)
 </td>
 
 <td>
-4265
+761060
 </td>
 
 <td>
-BMO.TO
+total_precip
 </td>
 
 <td>
-0.00
-</td>
-
-</tr>
-
-<tr>
-
-<td>
-raw_prices (daily close)
-</td>
-
-<td>
-4265
-</td>
-
-<td>
-BNS.TO
-</td>
-
-<td>
-0.00
+13.90
 </td>
 
 </tr>
@@ -432,39 +329,19 @@ BNS.TO
 <tr>
 
 <td>
-raw_prices (daily close)
+raw_weather (per-station daily)
 </td>
 
 <td>
-4265
+761060
 </td>
 
 <td>
-CM.TO
+max_temp
 </td>
 
 <td>
-0.00
-</td>
-
-</tr>
-
-<tr>
-
-<td>
-raw_prices (daily close)
-</td>
-
-<td>
-4265
-</td>
-
-<td>
-EMA.TO
-</td>
-
-<td>
-0.00
+11.31
 </td>
 
 </tr>
@@ -474,6 +351,7 @@ EMA.TO
 </table>
 </div>
 </div>
+<p>The raw weather data was collected from a total of 178 stations, although there is some fluctuation as to how many are active throughout the years and how many variables they report on any given day. This is reflected in the percent missingness (per-station daily), where snow and max_gust are missing 48% and 63% respectively. Aggregating these variables allows us to remove this missingness and match the trading data which had 0% missingness.</p>
 </section>
 <section id="feature-engineering" class="level3" data-number="2.3">
 <h3 data-number="2.3" class="anchored" data-anchor-id="feature-engineering"><span class="header-section-number">2.3</span> Feature engineering</h3>
@@ -495,9 +373,10 @@ EMA.TO
 </section>
 <section id="results" class="level2" data-number="3">
 <h2 data-number="3" class="anchored" data-anchor-id="results"><span class="header-section-number">3</span> Results</h2>
+<p>We split the results into two parts, the first addressing findings directly from the data and the second discussing the machine learning models.</p>
 <section id="weather" class="level3" data-number="3.1">
 <h3 data-number="3.1" class="anchored" data-anchor-id="weather"><span class="header-section-number">3.1</span> Weather</h3>
-<div id="0d5a4523" class="cell" data-execution_count="3">
+<div id="fd41ec37" class="cell" data-execution_count="3">
 <div class="cell-output cell-output-display">
 <table class="dataframe table table-sm table-striped small">
 
@@ -752,10 +631,32 @@ Max Gust (km/h)
 </table>
 </div>
 </div>
+<p>Table 1 summarises the distributions of the core weather variables. Mean daily temperature stits at 7.71 degrees celcius, with a wide standard distribution of 10.63 degrees. It follows a somewhat bimodal distribution as per Figure 1 below, with a mode just above 0 degrees, and another just under 20. Both the table and the figure show the threshod 5% and 95% extreme cold and hot days respectivley, corresponding to -10.6 degrees, and 22.5 degrees. Logically, percipitation, snow and gust all have a minimum value of 0, and tend to be right skewed.</p>
+<div id="fig-temp-dist" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-temp-dist-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/fig01_temp_distribution.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-temp-dist-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: <strong>Figure 1.</strong> Distribution of Ontario daily mean temperature (2008–2024, n = 6,210 days). Dashed lines mark the 5th and 95th percentiles (−2.1 °C and 18.1 °C) used to define <code>extreme_cold</code> and <code>extreme_heat</code>. The bimodal shape reflects the seasonal split between winter and summer modes typical of southern Ontario.
+</figcaption>
+</figure>
+</div>
+<p>We dive a bit deeper into extreme weather days with Figure 2, however no obvious trends are present at this time scale compared to more obvious plots starting from the 1800s.</p>
+<div id="fig-extreme-counts" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-extreme-counts-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/fig02_extreme_counts.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-extreme-counts-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: <strong>Figure 2.</strong> Annual count of extreme-weather days by type. Each colour is a percentile threshold; bars are dodged for visual comparison. Counts cluster around the expected ~18 days/year per type with mild year-to-year variation.
+</figcaption>
+</figure>
+</div>
 </section>
 <section id="returns" class="level3" data-number="3.2">
 <h3 data-number="3.2" class="anchored" data-anchor-id="returns"><span class="header-section-number">3.2</span> Returns</h3>
-<div id="695a948a" class="cell" data-execution_count="4">
+<div id="c67937a5" class="cell" data-execution_count="4">
 <div class="cell-output cell-output-display">
 <table class="dataframe table table-sm table-striped small">
 
@@ -1154,10 +1055,22 @@ Bank
 </table>
 </div>
 </div>
+<p>Mean daily log returns ranges from 0.009% (SU.TO - Energy) to 0.054% (IFC.TO - Insurance), with a reasonable volaity ordering rougly following Energy and Insurance as the most volatile, with Utilies and Retail at the low end and Banks somehwere in between.</p>
+<p>We can see patterns emerge over time with Figure 3 wherein we clearly see the financial in 2008 and the COVID drawdown in 2020 across every sector, confirming that the broad market factor dominates daily movement. Secondly, we can notice the dispersion among sectors, with banks and retail compounding faster than utilities, telecom, or the real-estate.</p>
+<div id="fig-cum-returns" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cum-returns-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/fig03_cumulative_returns.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cum-returns-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: <strong>Figure 3.</strong> Cumulative log returns by sector, 2008–2024. The 2008 financial crisis and 2020 COVID shock are visible across all sectors. Banks and energy compound the fastest; utilities and telecom are flatter and less volatile; the retail single-name (L.TO) under-performs over much of the sample.
+</figcaption>
+</figure>
+</div>
 </section>
 <section id="extreme-normal" class="level3" data-number="3.3">
 <h3 data-number="3.3" class="anchored" data-anchor-id="extreme-normal"><span class="header-section-number">3.3</span> Extreme-Normal</h3>
-<div id="afef4221" class="cell" data-execution_count="5">
+<div id="635ccd72" class="cell" data-execution_count="5">
 <div class="cell-output cell-output-display">
 <table class="dataframe table table-sm table-striped small">
 
@@ -1556,13 +1469,44 @@ Bank
 </table>
 </div>
 </div>
+<p>Table 3 shows the difference in basis points of return on normal days vs extreme days. Most are positive, with Utilities and Insurance having a plausible economic mechanism of signalling increased demand for energy and premiums increases, while Retail is one of the only two negative differences and could be explained by a lack of foot traffic or forced closures. However we must keep in mind that these differences are well within the daily volatility and thus probably do not offer much significance. These differences can be further explored visually with Figures 4 and 5, were the distributions match in the histogram and the ranges overlap in the boxplots showing that while the signal exists, it is quite small, especially relative to noise.</p>
+<div id="fig-ndr-dist" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ndr-dist-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/fig04_ndr_distribution.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ndr-dist-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: <strong>Figure 4.</strong> Next-day log return distribution by ticker, split by whether the previous day was an extreme-weather day. The extreme-day densities (red) sit almost entirely on top of the normal-day densities (blue) for every ticker, indicating that the unconditional descriptive difference shown in Table 3 is small relative to the underlying return dispersion.
+</figcaption>
+</figure>
+</div>
+<div id="fig-box-sector" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-box-sector-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/fig05_box_by_sector.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-box-sector-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: <strong>Figure 5.</strong> Next-day return boxplots by sector and weather regime. Bands are tight at the 25th–75th percentiles around zero; the difference between extreme and normal medians is too small to see at the box scale.
+</figcaption>
+</figure>
+</div>
+<p>The temperature-vs-returns scatter in Figure 6 shows a flat sloped line with a 95% confidence interval cointaining 0, confirming there is no linear relationship at the aggregate level.</p>
+<div id="fig-monthly-temp" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-monthly-temp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/fig06_monthly_temp_vs_ndr.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-monthly-temp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6: <strong>Figure 6.</strong> Monthly mean Ontario temperature vs average next-day TSX return. The OLS line is essentially flat with wide confidence bands, suggesting no monotonic temperature-return relationship at the monthly aggregation.
+</figcaption>
+</figure>
+</div>
+<p>In the correlation heatmap (Figure 7) we see that the strongest off-diagonal correlations are between weather features themselves (e.g., 0.28 between mean temperature and total precipitation, -0.17 between max gust and temperature). Notably, most weather features have almost no correlation with market returns.</p>
+<p><img src="figures/fig07_correlation_heatmap.png" id="fig-corr-heat" class="img-fluid" alt="Figure 7. Correlation matrix between weather features (mean_temp, total_precip, max_gust, temp_5d_anom) and return features (lagged_return, mkt_return, next_day_return). All weather-return correlations are within ±0.02; the strongest non-trivial correlation is the +0.30 mean_temp ↔ total_precip link from summer rain."> ## Models</p>
 </section>
-</section>
-<section id="models" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="models"><span class="header-section-number">4</span> Models</h2>
-<section id="performance" class="level3" data-number="4.1">
-<h3 data-number="4.1" class="anchored" data-anchor-id="performance"><span class="header-section-number">4.1</span> Performance</h3>
-<div id="22b689bf" class="cell" data-execution_count="6">
+<section id="performance" class="level3" data-number="3.4">
+<h3 data-number="3.4" class="anchored" data-anchor-id="performance"><span class="header-section-number">3.4</span> Performance</h3>
+<div id="0e8685f0" class="cell" data-execution_count="6">
 <div class="cell-output cell-output-display">
 <table class="dataframe table table-sm table-striped small">
 
@@ -1699,8 +1643,8 @@ NaN
 </div>
 </section>
 </section>
-<section id="conclusions-and-summary" class="level2" data-number="5">
-<h2 data-number="5" class="anchored" data-anchor-id="conclusions-and-summary"><span class="header-section-number">5</span> Conclusions and Summary</h2>
+<section id="conclusions-and-summary" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="conclusions-and-summary"><span class="header-section-number">4</span> Conclusions and Summary</h2>
 <hr>
 
 
